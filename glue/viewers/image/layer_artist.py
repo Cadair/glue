@@ -85,7 +85,7 @@ class ImageLayerArtist(BaseImageLayerArtist):
         if self._viewer_state.color_mode == 'One color per layer':
             return self.state.color
         else:
-            return self.state.cmap
+            return self.state.preferred_cmap if self.state.preferred_cmap else self.state.cmap
 
     def get_handle_legend(self):
         if self.enabled and self.state.visible:
@@ -156,7 +156,7 @@ class ImageLayerArtist(BaseImageLayerArtist):
             return
 
         if self._viewer_state.color_mode == 'Colormaps':
-            color = self.state.cmap
+            color = self.state.preferred_cmap if self.state.preferred_cmap else self.state.cmap
         else:
             color = self.state.color
 
@@ -328,6 +328,7 @@ class ImageSubsetLayerArtist(BaseImageLayerArtist):
                 else:
                     artist.set_visible(False)
                 artist.set_color(self.state.color)
+                artist.set_preferred_cmap(self.state.preferred_cmap)
                 artist.set_alpha(self.state.alpha * 0.5)
             artist.set_zorder(self.state.zorder)
 
