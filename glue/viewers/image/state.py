@@ -87,9 +87,9 @@ class ImageViewerState(MatplotlibDataViewerState):
                                             'which the images are shown')
     slices = DDCProperty(docstring='The current slice along all dimensions')
     color_mode = DDSCProperty(0, docstring='Whether each layer can have '
-                                                    'its own colormap (``Colormaps``) or '
-                                                    'whether each layer is assigned '
-                                                    'a single color (``One color per layer``)')
+                                           'its own colormap (``Colormaps``) or '
+                                           'whether each layer is assigned '
+                                           'a single color (``One color per layer``)')
 
     dpi = DDCProperty(72, docstring='The resolution (in dots per inch) of density maps, if present')
 
@@ -495,6 +495,7 @@ class ImageLayerState(BaseImageLayerState):
     bias = DDCProperty(0.5, docstring='A constant value that is added to the '
                                       'layer before rendering')
     cmap = DDCProperty(docstring='The colormap used to render the layer')
+    preferred_cmap = DDCProperty(docstring='The preferred colormap used to render the layer')
     stretch = DDSCProperty(docstring='The stretch used to render the layer, '
                                      'which should be one of ``linear``, '
                                      '``sqrt``, ``log``, or ``arcsinh``')
@@ -544,7 +545,8 @@ class ImageLayerState(BaseImageLayerState):
         self.update_from_dict(kwargs)
 
         if self.cmap is None:
-            self.cmap = colormaps.members[0][1]
+            self.cmap = self.preferred_cmap if self.preferred_cmap\
+                else colormaps.members[0][1]
 
     def _update_attribute(self, *args):
         if self.layer is not None:
@@ -567,9 +569,11 @@ class ImageLayerState(BaseImageLayerState):
         if self.global_sync:
             self._sync_color.enable_syncing()
             self._sync_alpha.enable_syncing()
+            self._sync_preferred_cmap.enable_syncing()
         else:
             self._sync_color.disable_syncing()
             self._sync_alpha.disable_syncing()
+            self._sync_preferred_cmap.disable_syncing()
 
     def _get_image(self, view=None):
         return self.layer[self.attribute, view]

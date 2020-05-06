@@ -270,6 +270,8 @@ class MatplotlibLayerState(LayerState):
                                                    'the data')
     alpha = DeferredDrawCallbackProperty(docstring='The transparency used to '
                                                    'display the data')
+    preferred_cmap = DeferredDrawCallbackProperty(docstring='The preferred color used to display '
+                                                            'the data')
 
     def __init__(self, viewer_state=None, **kwargs):
 
@@ -277,9 +279,11 @@ class MatplotlibLayerState(LayerState):
 
         self.color = self.layer.style.color
         self.alpha = self.layer.style.alpha
+        self.preferred_cmap = self.layer.style.preferred_cmap
 
         self._sync_color = keep_in_sync(self, 'color', self.layer.style, 'color')
         self._sync_alpha = keep_in_sync(self, 'alpha', self.layer.style, 'alpha')
+        self._sync_preferred_cmap = keep_in_sync(self, 'preferred_cmap', self.layer.style, 'preferred_cmap')
 
         self.add_global_callback(self._notify_layer_update)
 
