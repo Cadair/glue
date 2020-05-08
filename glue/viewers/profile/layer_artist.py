@@ -143,7 +143,6 @@ class ProfileLayerArtist(MatplotlibLayerArtist):
             mpl_artist.set_zorder(self.state.zorder)
             mpl_artist.set_color(self.state.color)
             mpl_artist.set_alpha(self.state.alpha)
-            mpl_artist.set_preferred_cmap(self.state.preferred_cmap)
             mpl_artist.set_linewidth(self.state.linewidth)
 
         self.redraw()
