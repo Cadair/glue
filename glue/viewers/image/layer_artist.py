@@ -328,7 +328,6 @@ class ImageSubsetLayerArtist(BaseImageLayerArtist):
                 else:
                     artist.set_visible(False)
                 artist.set_color(self.state.color)
-                # artist.set_preferred_cmap(self.state.preferred_cmap)  # TODO: test this
                 artist.set_alpha(self.state.alpha * 0.5)
             artist.set_zorder(self.state.zorder)
 
