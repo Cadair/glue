@@ -270,8 +270,6 @@ class MatplotlibLayerState(LayerState):
                                                    'the data')
     alpha = DeferredDrawCallbackProperty(docstring='The transparency used to '
                                                    'display the data')
-    preferred_cmap = DeferredDrawCallbackProperty(docstring='The preferred color used to display '
-                                                            'the data')
 
     def __init__(self, viewer_state=None, **kwargs):
 
