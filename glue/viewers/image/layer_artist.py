@@ -85,7 +85,6 @@ class ImageLayerArtist(BaseImageLayerArtist):
         if self._viewer_state.color_mode == 'One color per layer':
             return self.state.color
         else:
-            # return self.state.preferred_cmap if self.state.preferred_cmap else self.state.cmap
             return self.state.cmap
 
     def get_handle_legend(self):
@@ -157,7 +156,6 @@ class ImageLayerArtist(BaseImageLayerArtist):
             return
 
         if self._viewer_state.color_mode == 'Colormaps':
-            # color = self.state.preferred_cmap if self.state.preferred_cmap else self.state.cmap
             color = self.state.cmap
         else:
             color = self.state.color

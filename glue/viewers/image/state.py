@@ -495,7 +495,6 @@ class ImageLayerState(BaseImageLayerState):
     bias = DDCProperty(0.5, docstring='A constant value that is added to the '
                                       'layer before rendering')
     cmap = DDCProperty(docstring='The colormap used to render the layer')
-    preferred_cmap = DDCProperty(docstring='The preferred colormap used to render the layer')
     stretch = DDSCProperty(docstring='The stretch used to render the layer, '
                                      'which should be one of ``linear``, '
                                      '``sqrt``, ``log``, or ``arcsinh``')
@@ -569,11 +568,9 @@ class ImageLayerState(BaseImageLayerState):
         if self.global_sync:
             self._sync_color.enable_syncing()
             self._sync_alpha.enable_syncing()
-            # self._sync_preferred_cmap.enable_syncing()
         else:
             self._sync_color.disable_syncing()
             self._sync_alpha.disable_syncing()
-            # self._sync_preferred_cmap.disable_syncing()
 
     def _get_image(self, view=None):
         return self.layer[self.attribute, view]
