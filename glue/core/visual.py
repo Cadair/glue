@@ -99,15 +99,7 @@ class VisualAttributes(HasCallbackProperties):
     @callback_property
     def preferred_cmap(self):
         """
-        Color specified using Matplotlib notation
-
-        Specifically, it can be:
-
-         * A string with a common color (e.g. 'black', 'red', 'orange')
-         * A string containing a float in the rng [0:1] for a shade of
-           gray ('0.0' = black,'1.0' = white)
-         * A tuple of three floats in the rng [0:1] for (R, G, B)
-         * An HTML hexadecimal string (e.g. '#eeefff')
+        A preferred colormap specified using Matplotlib notation
         """
         return self._preferred_cmap
 
