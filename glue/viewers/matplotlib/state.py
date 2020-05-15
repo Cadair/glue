@@ -283,7 +283,7 @@ class MatplotlibLayerState(LayerState):
 
         self._sync_color = keep_in_sync(self, 'color', self.layer.style, 'color')
         self._sync_alpha = keep_in_sync(self, 'alpha', self.layer.style, 'alpha')
-        self._sync_preferred_cmap = keep_in_sync(self, 'preferred_cmap', self.layer.style, 'preferred_cmap')
+        # self._sync_preferred_cmap = keep_in_sync(self, 'preferred_cmap', self.layer.style, 'preferred_cmap')
 
         self.add_global_callback(self._notify_layer_update)
 

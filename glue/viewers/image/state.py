@@ -569,11 +569,11 @@ class ImageLayerState(BaseImageLayerState):
         if self.global_sync:
             self._sync_color.enable_syncing()
             self._sync_alpha.enable_syncing()
-            self._sync_preferred_cmap.enable_syncing()
+            # self._sync_preferred_cmap.enable_syncing()
         else:
             self._sync_color.disable_syncing()
             self._sync_alpha.disable_syncing()
-            self._sync_preferred_cmap.disable_syncing()
+            # self._sync_preferred_cmap.disable_syncing()
 
     def _get_image(self, view=None):
         return self.layer[self.attribute, view]

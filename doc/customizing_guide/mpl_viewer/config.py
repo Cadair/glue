@@ -62,7 +62,7 @@ class TutorialLayerArtist(MatplotlibLayerArtist):
         self.state.add_callback('zorder', self._on_visual_change)
         self.state.add_callback('color', self._on_visual_change)
         self.state.add_callback('alpha', self._on_visual_change)
-        self.state.add_callback('preferred_cmap', self._on_visual_change)
+        # self.state.add_callback('preferred_cmap', self._on_visual_change)  # This is not needed
 
         self._viewer_state.add_callback('x_att', self._on_attribute_change)
         self._viewer_state.add_callback('y_att', self._on_attribute_change)
@@ -77,7 +77,7 @@ class TutorialLayerArtist(MatplotlibLayerArtist):
         else:
             self.artist.set_markerfacecolor('white')
         self.artist.set_alpha(self.state.alpha)
-        self.artist.set_preferred_cmap(self.state.preferred_cmap)
+        self.artist.set_preferred_cmap(self.state.preferred_cmap)  # This is needed
 
         self.redraw()
 
