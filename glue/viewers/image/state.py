@@ -547,7 +547,6 @@ class ImageLayerState(BaseImageLayerState):
 
             for i, element in enumerate(colormaps.members):
                 if element[0] == self.preferred_cmap:
-                    print(i)
                     self.preferred_cmap = element[1]
 
         if self.cmap is None:
