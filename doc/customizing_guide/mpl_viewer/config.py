@@ -76,7 +76,6 @@ class TutorialLayerArtist(MatplotlibLayerArtist):
         else:
             self.artist.set_markerfacecolor('white')
         self.artist.set_alpha(self.state.alpha)
-        self.artist.set_preferred_cmap(self.state.preferred_cmap)
 
         self.redraw()
 
