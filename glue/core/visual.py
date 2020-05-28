@@ -33,7 +33,6 @@ class VisualAttributes(HasCallbackProperties):
         # once the class is defined.
         color = color or settings.DATA_COLOR
         alpha = alpha or settings.DATA_ALPHA
-        preferred_cmap = preferred_cmap
 
         self.parent = parent
         self._atts = ['color', 'alpha', 'linewidth', 'linestyle', 'marker',
