@@ -277,7 +277,6 @@ class MatplotlibLayerState(LayerState):
 
         self.color = self.layer.style.color
         self.alpha = self.layer.style.alpha
-        self.preferred_cmap = self.layer.style.preferred_cmap
 
         self._sync_color = keep_in_sync(self, 'color', self.layer.style, 'color')
         self._sync_alpha = keep_in_sync(self, 'alpha', self.layer.style, 'alpha')
