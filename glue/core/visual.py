@@ -1,6 +1,8 @@
 from matplotlib.colors import ColorConverter
 
 from glue.config import settings
+from glue.config import colormaps
+
 from echo import callback_property, HasCallbackProperties
 
 # Define acceptable line styles
@@ -44,6 +46,14 @@ class VisualAttributes(HasCallbackProperties):
         self.linestyle = 'solid'
         self.marker = 'o'
         self.markersize = 3
+
+    def convert_colormap_from_name(self, preferred_cmap):
+        """Convert colormap as string to colormap as Matplotlib colormpas object"""
+        if isinstance(preferred_cmap, str):
+            for i, element in enumerate(colormaps.members):
+                if element[0] == preferred_cmap:
+                    preferred_cmap = element[1]
+        return preferred_cmap
 
     def __eq__(self, other):
         if not isinstance(other, VisualAttributes):
@@ -104,7 +114,10 @@ class VisualAttributes(HasCallbackProperties):
 
     @preferred_cmap.setter
     def preferred_cmap(self, value):
-        self._preferred_cmap = value
+        if isinstance(value, str):
+            self._preferred_cmap = self.convert_colormap_from_name(value)
+        else:
+            self._preferred_cmap = value
 
     @callback_property
     def alpha(self):

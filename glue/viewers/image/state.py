@@ -543,15 +543,8 @@ class ImageLayerState(BaseImageLayerState):
 
         self.update_from_dict(kwargs)
 
-        if isinstance(self.layer.style.preferred_cmap, str):
-
-            for i, element in enumerate(colormaps.members):
-                if element[0] == self.layer.style.preferred_cmap:
-                    self.layer.style.preferred_cmap = element[1]
-
         if self.cmap is None:
-            self.cmap = self.layer.style.preferred_cmap if self.layer.style.preferred_cmap\
-                else colormaps.members[0][1]
+            self.cmap = self.layer.style.preferred_cmap or colormaps.members[0][1]
 
     def _update_attribute(self, *args):
         if self.layer is not None:
