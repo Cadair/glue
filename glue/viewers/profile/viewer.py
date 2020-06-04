@@ -1,6 +1,20 @@
 from glue.core.subset import roi_to_subset_state
+from glue.core.coordinates import Coordinates, LegacyCoordinates
+from astropy.wcs import WCS
+from astropy.visualization.wcsaxes.frame import RectangularFrame1D
 
 __all__ = ['MatplotlibProfileMixin']
+
+
+def get_identity_wcs(naxis):
+
+    wcs = WCS(naxis=naxis)
+    wcs.wcs.ctype = ['X'] * naxis
+    wcs.wcs.crval = [0.] * naxis
+    wcs.wcs.crpix = [1.] * naxis
+    wcs.wcs.cdelt = [1.] * naxis
+
+    return wcs
 
 
 class MatplotlibProfileMixin(object):
@@ -8,16 +22,19 @@ class MatplotlibProfileMixin(object):
     def setup_callbacks(self):
         self.state.add_callback('x_att', self._update_axes)
         self.state.add_callback('normalize', self._update_axes)
+        # self.axes.set_adjustable('datalim')
+        self.state.add_callback('x_att', self._set_wcs)
+        self.state.add_callback('reference_data', self._set_wcs)
 
     def _update_axes(self, *args):
 
-        if self.state.x_att is not None:
-            self.state.x_axislabel = self.state.x_att.label
+        # if self.state.x_att is not None:
+        #     self.state.x_axislabel = self.state.x_att.label
 
-        if self.state.normalize:
-            self.state.y_axislabel = 'Normalized data values'
-        else:
-            self.state.y_axislabel = 'Data values'
+        # if self.state.normalize:
+        #     self.state.y_axislabel = 'Normalized data values'
+        # else:
+        #     self.state.y_axislabel = 'Data values'
 
         self.axes.figure.canvas.draw_idle()
 

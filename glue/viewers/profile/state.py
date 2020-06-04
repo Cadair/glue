@@ -104,6 +104,12 @@ class ProfileViewerState(MatplotlibDataViewerState):
 
         data = self.reference_data
 
+        with delay_callback(self, 'x_min', 'x_max'):
+            self.x_min = 0
+            self.x_max = data.shape[self.x_att_pixel.axis]
+
+        return
+
         if self.x_att in data.pixel_component_ids:
             x_min, x_max = -0.5, data.shape[self.x_att.axis] - 0.5
         else:
@@ -312,6 +318,7 @@ class ProfileLayerState(MatplotlibLayerState):
             self.update_limits(update_profile=False)
 
     def update_limits(self, update_profile=True):
+        return
         with delay_callback(self, 'v_min', 'v_max'):
             if update_profile:
                 self.update_profile(update_limits=False)
