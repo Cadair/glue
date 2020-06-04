@@ -171,6 +171,24 @@ class ProfileViewerState(MatplotlibDataViewerState):
         else:
             return 1
 
+    @property
+    def wcsaxes_slice(self):
+        """
+        Returns slicing information usable by WCSAxes.
+
+        This returns an iterable of slices, and including ``'x'`` and ``'y'``
+        for the dimensions along which we are not slicing.
+        """
+        if self.reference_data is None:
+            return None
+        slices = []
+        for i in range(self.reference_data.ndim):
+            if i == self.x_att_pixel.axis:
+                slices.append('x')
+            else:
+                slices.append(0)
+        return slices[::-1]
+
 
 class ProfileLayerState(MatplotlibLayerState):
     """
