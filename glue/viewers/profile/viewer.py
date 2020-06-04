@@ -35,3 +35,28 @@ class MatplotlibProfileMixin(object):
 
         subset_state = roi_to_subset_state(roi, x_att=self.state.x_att)
         self.apply_subset_state(subset_state, override_mode=override_mode)
+
+    def _set_wcs(self, event=None, relim=True):
+        ref_coords = getattr(self.state.reference_data, 'coords', None)
+
+        print(f"{self.state.wcsaxes_slice=}, {ref_coords=}")
+
+        self.axes.frame_class = RectangularFrame1D
+        if ref_coords is None or isinstance(ref_coords, LegacyCoordinates):
+            self.axes.reset_wcs(slices=self.state.wcsaxes_slice,
+                                wcs=get_identity_wcs(self.state.reference_data.ndim))
+        else:
+            self.axes.reset_wcs(slices=self.state.wcsaxes_slice, wcs=ref_coords)
+
+        # Reset the axis labels to match the fact that the new axes have no labels
+        self.state.x_axislabel = ''
+        self.state.y_axislabel = ''
+
+        self._update_appearance_from_settings()
+        self._update_axes()
+
+        self.update_x_ticklabel()
+        self.update_y_ticklabel()
+
+        if relim:
+            self.state.reset_limits()
