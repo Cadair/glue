@@ -28,7 +28,7 @@ class ProfileLayerArtist(MatplotlibLayerArtist):
         self._viewer_state.add_global_callback(self._update_profile)
         self.state.add_global_callback(self._update_profile)
 
-        self.plot_artist = self.axes.plot([1, 2, 3], [3, 4, 5], 'k-', drawstyle='steps-mid')[0]
+        self.plot_artist = self.axes.plot([3, 4, 5], 'k-', drawstyle='steps-mid')[0]
 
         self.mpl_artists = [self.plot_artist]
 
@@ -79,6 +79,7 @@ class ProfileLayerArtist(MatplotlibLayerArtist):
 
         # Update the data values.
         if len(x) > 0:
+            x = np.arange(len(x))
             self.state.update_limits()
             # Normalize profile values to the [0:1] range based on limits
             if self._viewer_state.normalize:
