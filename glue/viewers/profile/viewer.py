@@ -22,9 +22,7 @@ def get_identity_wcs(naxis):
 class MatplotlibProfileMixin(object):
 
     def setup_callbacks(self):
-        # self.state.add_callback('x_att', self._update_axes)
         self.state.add_callback('normalize', self._set_wcs)
-        # self.axes.set_adjustable('datalim')
         self.state.add_callback('x_att', self._set_wcs)
         self.state.add_callback('reference_data', self._set_wcs)
 
@@ -67,7 +65,7 @@ class MatplotlibProfileMixin(object):
     def _set_wcs(self, event=None, relim=True):
         ref_coords = getattr(self.state.reference_data, 'coords', None)
 
-        print(f"{self.state.wcsaxes_slice}, {ref_coords}")
+        # print(f"{self.state.wcsaxes_slice}, {ref_coords}")
 
         self.axes.frame_class = RectangularFrame1D
 
@@ -91,23 +89,3 @@ class MatplotlibProfileMixin(object):
 
         if relim:
             self.state.reset_limits()
-
-        # Determine whether changing slices requires changing the WCS
-        if ref_coords is None or type(ref_coords) == Coordinates:
-            self._changing_slice_requires_wcs_update = False
-        # else:
-        #     ix = self.state.x_att.axis
-        #     iy = self.state.y_att.axis
-        #     x_dep = list(dependent_axes(ref_coords, ix))
-        #     y_dep = list(dependent_axes(ref_coords, iy))
-        #     if ix in x_dep:
-        #         x_dep.remove(ix)
-        #     if iy in x_dep:
-        #         x_dep.remove(iy)
-        #     if ix in y_dep:
-        #         y_dep.remove(ix)
-        #     if iy in y_dep:
-        #         y_dep.remove(iy)
-        #     self._changing_slice_requires_wcs_update = bool(x_dep or y_dep)
-
-        self._wcs_set = True
