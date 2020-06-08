@@ -12,6 +12,8 @@ from glue.core.data_combo_helper import ManualDataComboHelper, ComponentIDComboH
 from glue.utils import defer_draw, nanmin, nanmax
 from glue.core.link_manager import is_convertible_to_single_pixel_cid
 from glue.core.exceptions import IncompatibleDataException
+from glue.core.state_objects import StateAttributeLimitsHelper
+
 
 __all__ = ['ProfileViewerState', 'ProfileLayerState']
 
@@ -215,6 +217,10 @@ class ProfileLayerState(MatplotlibLayerState):
     def __init__(self, layer=None, viewer_state=None, **kwargs):
 
         super(ProfileLayerState, self).__init__(layer=layer, viewer_state=viewer_state)
+
+        self.attribute_lim_helper = StateAttributeLimitsHelper(self, attribute='attribute',
+                                                               percentile='percentile',
+                                                               lower='v_min', upper='v_max')
 
         self.attribute_att_helper = ComponentIDComboHelper(self, 'attribute',
                                                            numeric=True, categorical=False)
