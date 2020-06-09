@@ -22,7 +22,8 @@ FUNCTIONS = OrderedDict([('maximum', 'Maximum'),
                          ('minimum', 'Minimum'),
                          ('mean', 'Mean'),
                          ('median', 'Median'),
-                         ('sum', 'Sum')])
+                         ('sum', 'Sum'),
+                         ('slice', 'Slice')])
 
 
 class ProfileViewerState(MatplotlibDataViewerState):
@@ -281,6 +282,7 @@ class ProfileLayerState(MatplotlibLayerState):
         # If we get here, then x_att does correspond to a single pixel axis in
         # the cube, so we now prepare a list of axes to collapse over.
         axes = tuple(i for i in range(self.layer.ndim) if i != pix_cid.axis)
+        print('axes', axes)
 
         # We now get the y values for the data
 
@@ -295,7 +297,35 @@ class ProfileLayerState(MatplotlibLayerState):
             data = self.layer
             subset_state = None
 
-        profile_values = data.compute_statistic(self.viewer_state.function, self.attribute, axis=axes, subset_state=subset_state)
+        print('data', data)
+        print('data shape', data.shape)
+
+        print('self.viewer_state.reference_data.coords', self.viewer_state.reference_data.coords)
+
+        print('self.viewer_state', self.viewer_state)
+
+        print('self.viewer_state.indices', self.viewer_state.indices)
+
+        print('self.viewer_state.x_att', self.viewer_state.x_att)
+
+        print('self.attribute', self.attribute)
+
+        xi = self.viewer_state.indices[0]
+        yi = self.viewer_state.indices[1]
+        zi = self.viewer_state.indices[2]
+
+        if self.viewer_state.function =='slice':
+
+            profile_values = data
+
+        else:
+            profile_values = data.compute_statistic(self.viewer_state.function, self.attribute, axis=axes,
+                                                    subset_state=subset_state)
+
+        print('profile_values', profile_values)
+        print('profile_values type', type(profile_values))
+        print('profile_values shape', profile_values.shape)
+        print('profile_values length', len(profile_values))
 
         if np.all(np.isnan(profile_values)):
             self._profile_cache = [], []
