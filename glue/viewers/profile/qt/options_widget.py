@@ -1,10 +1,13 @@
 import os
+import copy
 
 from qtpy import QtWidgets
 
 from glue.core.coordinate_helpers import dependent_axes
 from echo.qt import autoconnect_callbacks_to_qt
 from glue.utils.qt import load_ui, fix_tab_widget_fontsize
+from glue.core.data_derived import IndexedData
+
 
 __all__ = ['ProfileOptionsWidget']
 
@@ -32,6 +35,13 @@ class ProfileOptionsWidget(QtWidgets.QWidget):
         self.viewer_state = viewer_state
 
         self.session = session
+
+        for dataset in self.session.data_collection:
+            if isinstance(dataset, IndexedData):
+                print('dataset.indices', dataset.indices)
+                # self.indices = dataset.indices
+
+                self.viewer_state.indices = dataset.indices
 
         self.viewer_state.add_callback('x_att', self._on_attribute_change)
 

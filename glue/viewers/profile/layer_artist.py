@@ -77,8 +77,6 @@ class ProfileLayerArtist(MatplotlibLayerArtist):
 
         x, y = visible_data
 
-        print('y: ', y)
-
         # Update the data values.
         if len(x) > 0:
             x = np.arange(len(x))
