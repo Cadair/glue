@@ -62,62 +62,6 @@ class ProfileAnalysisTool(Tool):
         else:
             self._profile_tools.show()
 
-@viewer_tool
-class ProfileLabeledSlider(QtWidgets.QWidget):
-    """
-    A labeled slider widget
-    """
-    action_text = 'Slider'
-    tool_id = 'profile-analysis'
-
-    range = None
-    integer = None
-
-    def __init__(self, parent=None):
-
-        super(ProfileLabeledSlider, self).__init__(parent)
-
-        self._range = range
-
-        self._slider = QSlider()
-        self._slider.setMinimum(0)
-        self._slider.setMaximum(100)
-        self._slider.setOrientation(Qt.Horizontal)
-
-        self._label = QLabel('')
-        self._layout = QHBoxLayout()
-        self._layout.setContentsMargins(2, 2, 2, 2)
-        self._layout.addWidget(self._slider)
-        self._layout.addWidget(self._label)
-
-        self._slider.valueChanged.connect(self._update_label)
-
-        self.setLayout(self._layout)
-
-    def _update_label(self, *args):
-        self._label.setText(str(self.value()))
-
-    @property
-    def valueChanged(self):
-        return self._slider.valueChanged
-
-    def value(self, layer=None, view=None):
-        value = self._slider.value() / 100. * (self.range[1] - self.range[0]) + self.range[0]
-        if self.integer:
-            return int(value)
-        else:
-            return (value)
-
-    _in_set_value = False
-
-    def setValue(self, value):
-        if self._in_set_value:
-            return
-        self._in_set_value = True
-        value = int(100 * (value - self.range[0]) / (self.range[1] - self.range[0]))
-        self._slider.setValue(value)
-        self._in_set_value = False
-
 
 class ProfileTools(QtWidgets.QWidget):
 
