@@ -1855,7 +1855,6 @@ class Data(BaseCartesianData):
 
             return axis_index
 
-
             # In the specific case where the subset state depends only on pixel
             # component IDs but not the one for the chunk iteration axis used
             # here, we should not need to chunk. However this doesn't quite
@@ -1876,7 +1875,7 @@ class Data(BaseCartesianData):
             #         efficient_subset_state = True
 
             # For now, just assume we always have to chunk
-            efficient_subset_state = False
+            efficient_subset_state = True  # TODO: Toggle this boolean value
 
             if not efficient_subset_state:
 
