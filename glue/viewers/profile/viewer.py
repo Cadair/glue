@@ -33,6 +33,7 @@ class MatplotlibProfileMixin(object):
         # else:
         axis = 0
         self.axes.coords[axis].set_ticklabel(size=self.state.x_ticklabel_size)
+
         self.redraw()
 
     def _update_axes(self, *args):
