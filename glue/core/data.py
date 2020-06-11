@@ -27,7 +27,7 @@ from glue.core.visual import VisualAttributes
 from glue.core.contracts import contract
 from glue.core.joins import get_mask_with_key_joins
 from glue.config import settings, data_translator, subset_state_translator
-from glue.utils import (compute_statistic, compute_identity,
+from glue.utils import (compute_statistic,
                         unbroadcast, iterate_chunks,
                         datetime64_to_mpl, broadcast_to, categorical_ndarray,
                         format_choices, random_views_for_dask_array)
@@ -1657,6 +1657,7 @@ class Data(BaseCartesianData):
                     values = self.compute_statistic(statistic, cid, subset_state=subset_state,
                                                     axis=axis, finite=finite, positive=positive,
                                                     percentile=percentile, view=chunk_view)
+
                     result[chunk_view[axis_index]] = values
 
                 return result
@@ -1762,6 +1763,9 @@ class Data(BaseCartesianData):
             data = self.get_data(cid, view=view)
             mask = None
 
+        if statistic == 'slice':
+            data = self.get_data(cid, view=view)
+
         if isinstance(data, categorical_ndarray):
             data = data.codes
 
@@ -1789,6 +1793,7 @@ class Data(BaseCartesianData):
                                    positive=positive, percentile=percentile)
 
         if subarray_slices is None or axis is None:
+
             return result
         else:
             # Since subarray_slices was set above, we need to determine the
@@ -1802,99 +1807,8 @@ class Data(BaseCartesianData):
             full_result = np.zeros(full_shape) * np.nan
             result_slices = [subarray_slices[idim] for idim in range(self.ndim) if idim not in axis]
             full_result[result_slices] = result
+
             return full_result
-
-    def compute_identity(self, cid, data, subset_state=None, axis=None,
-                         finite=True, positive=False, view=None,
-                         n_chunk_max=40000000):
-        """
-        Compute a so-called identity for the data.
-
-        Parameters
-        ----------
-        cid : `ComponentID` or str
-            The component ID to compute the identity on - if given as a string
-            this will be assumed to be for the component belonging to the dataset
-            (not external links).
-        subset_state : `SubsetState`
-            If specified, the identity will only include the values that are in
-            the subset specified by this subset state.
-        axis : None or int or tuple of int
-            If specified, the axis/axes to compute the statistic over.
-        finite : bool, optional
-            Whether to include only finite values in the statistic. This should
-            be `True` to ignore NaN/Inf values
-        positive : bool, optional
-            Whether to include only (strictly) positive values in the statistic.
-            This is used for example when computing statistics of data shown in
-            log space.
-        n_chunk_max : int, optional
-            If there are more elements in the array than this value, operate in
-            chunks with at most this size.
-        """
-
-        # TODO: generalize chunking to more types of axis
-
-        # In recent version of Numpy, using lists is not the same as using
-        # tuples, so we make sure we always use tuples to avoid confusion.
-        if isinstance(view, list):
-            view = tuple(view)
-
-        if (view is None and
-                isinstance(axis, tuple) and
-                len(axis) > 0 and
-                len(axis) == self.ndim - 1 and
-                self.size > n_chunk_max and
-                not isinstance(subset_state, SliceSubsetState)):
-
-            # We operate in chunks here to avoid memory issues.
-
-            axis_index = [a for a in range(self.ndim) if a not in axis][0]
-
-            print('axis_index', axis_index)
-
-            return axis_index
-
-            # In the specific case where the subset state depends only on pixel
-            # component IDs but not the one for the chunk iteration axis used
-            # here, we should not need to chunk. However this doesn't quite
-            # work because compute_identity still makes a copy of the data
-            # so we need to make sure we never have too large arrays there.
-            # efficient_subset_state = False
-            # if subset_state is not None:
-            #     from glue.core.link_manager import pixel_cid_to_pixel_cid_matrix
-            #     for att in subset_state.attributes:
-            #         # TODO: in principle we could still deal with non-pixel
-            #         # component IDs, so this should be fixed.
-            #         if not isinstance(att, PixelComponentID):
-            #             break
-            #         matrix = pixel_cid_to_pixel_cid_matrix(att.parent, self)
-            #         if matrix[att.axis, axis_index]:
-            #             break
-            #     else:
-            #         efficient_subset_state = True
-
-            # For now, just assume we always have to chunk
-            efficient_subset_state = True  # TODO: Toggle this boolean value
-
-            if not efficient_subset_state:
-
-                result = np.zeros(self.shape[axis_index])
-
-                chunk_shape = list(self.shape)
-
-                # Deliberately leave n_chunks as float to not round twice
-                n_chunks = self.size / n_chunk_max
-
-                chunk_shape[axis_index] = max(1, int(chunk_shape[axis_index] / n_chunks))
-
-                for chunk_view in iterate_chunks(self.shape, chunk_shape=chunk_shape):
-                    values = self.compute_identity(cid, data, subset_state=subset_state,
-                                                   axis=axis, view=chunk_view)
-
-                    result[chunk_view[axis_index]] = values
-
-                return result
 
     def compute_histogram(self, cids, weights=None, range=None, bins=None, log=None, subset_state=None):
         """
