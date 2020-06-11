@@ -10,7 +10,7 @@ __all__ = ['unique', 'shape_to_string', 'view_shape', 'stack_view',
            'coerce_numeric', 'check_sorted', 'broadcast_to', 'unbroadcast',
            'iterate_chunks', 'combine_slices', 'nanmean', 'nanmedian', 'nansum',
            'nanmin', 'nanmax', 'format_minimal', 'compute_statistic',
-           'compute_identity', 'categorical_ndarray', 'index_lookup',
+           'categorical_ndarray', 'index_lookup',
            'ensure_numerical', 'broadcast_arrays_minimal',
            'random_views_for_dask_array']
 
@@ -451,6 +451,10 @@ def compute_statistic(statistic, data, mask=None, axis=None, finite=True,
     # NOTE: this function should not ever have to use glue-specific objects.
     # The aim is to eventually use a fast C implementation of this function.
 
+    if statistic == 'slice':
+        print('np.array(data, dtype=float)[axis]', np.array(data, dtype=float)[axis])
+        return np.array(data, dtype=float)[axis]
+
     if statistic not in PLAIN_FUNCTIONS:
         raise ValueError("Unrecognized statistic: {0}".format(statistic))
 
@@ -475,11 +479,11 @@ def compute_statistic(statistic, data, mask=None, axis=None, finite=True,
             data = np.array(data, dtype=float)
             data[~keep] = np.nan
 
-        function = NAN_FUNCTIONS[statistic]
+        function = NAN_FUNCTIONS[statistic] or None
 
     else:
 
-        function = PLAIN_FUNCTIONS[statistic]
+        function = PLAIN_FUNCTIONS[statistic] or None
 
     if data.size == 0:
         return np.nan
@@ -494,32 +498,6 @@ def compute_statistic(statistic, data, mask=None, axis=None, finite=True,
         else:
             return function(data, axis=axis)
 
-
-def compute_identity(data, mask=None, axis=None, finite=True,
-                      positive=False):
-    """
-    Compute a statistic for the data.
-
-    Parameters
-    ----------
-    data : `numpy.ndarray`
-        The data to compute the statistic for.
-    axis : None or int or tuple of int
-        If specified, the axis/axes to compute the statistic over.
-    finite : bool, optional
-        Whether to include only finite values in the statistic. This should
-        be `True` to ignore NaN/Inf values
-    positive : bool, optional
-        Whether to include only (strictly) positive values in the statistic.
-        This is used for example when computing statistics of data shown in
-        log space.
-    """
-
-    data = np.asanyarray(data)
-
-    data = np.array(data, dtype=float)
-
-    return data
 
 class categorical_ndarray(np.ndarray):
     """
