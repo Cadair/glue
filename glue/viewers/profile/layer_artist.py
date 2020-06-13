@@ -4,7 +4,6 @@ import warnings
 import numpy as np
 from matplotlib.lines import Line2D
 
-
 from glue.core import BaseData
 from glue.utils import defer_draw, nanmin, nanmax
 from glue.viewers.profile.state import ProfileLayerState
@@ -30,7 +29,6 @@ class ProfileLayerArtist(MatplotlibLayerArtist):
 
         self.plot_artist = self.axes.plot([1, 2, 3], [3, 4, 5], 'k-', drawstyle='steps-mid',
                                           color=self.state.layer.style.color)[0]
-        # self.axes.ticklabel_format(axis='both', style='sci', useMathText=True)
         self.mpl_artists = [self.plot_artist]
 
     @defer_draw
