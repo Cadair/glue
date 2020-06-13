@@ -452,7 +452,6 @@ def compute_statistic(statistic, data, mask=None, axis=None, finite=True,
     # The aim is to eventually use a fast C implementation of this function.
 
     if statistic == 'slice':
-        print('np.array(data, dtype=float)[axis]', np.array(data, dtype=float)[axis])
         return np.array(data, dtype=float)[axis]
 
     if statistic not in PLAIN_FUNCTIONS:

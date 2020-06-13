@@ -117,7 +117,6 @@ class MultiSliceWidgetHelper(object):
                 else:
                     self._sliders[i].state.slice_center = self.viewer_state.slices[i]
 
-
 if __name__ == "__main__":
 
     from glue.core import Data
