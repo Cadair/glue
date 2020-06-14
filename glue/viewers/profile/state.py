@@ -300,8 +300,17 @@ class ProfileLayerState(MatplotlibLayerState):
         yi = self.viewer_state.indices[1]
         zi = self.viewer_state.indices[2]
 
+        # if self.viewer_state.function == 'slice':
+        #     profile_values = data.compute_statistic('slice', self.attribute).squeeze()[xi, yi, :]
+
         if self.viewer_state.function == 'slice':
-            profile_values = data.compute_statistic('slice', self.attribute).squeeze()[xi, yi, :]
+            if zi is None:
+                profile_values = data.compute_statistic('slice', self.attribute).squeeze()[xi, yi, :]
+            elif xi is None:
+                profile_values = data.compute_statistic('slice', self.attribute).squeeze()[:, yi, zi]
+            elif yi is None:
+                profile_values = data.compute_statistic('slice', self.attribute).squeeze()[xi, :, zi]
+
         else:
             profile_values = data.compute_statistic(self.viewer_state.function, self.attribute, axis=axes,
                                                     subset_state=subset_state)
