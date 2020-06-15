@@ -296,22 +296,21 @@ class ProfileLayerState(MatplotlibLayerState):
             data = self.layer
             subset_state = None
 
-        if self.viewer_state is not None:
-            xi = self.viewer_state.indices[0]
-            yi = self.viewer_state.indices[1]
-            zi = self.viewer_state.indices[2]
+        xi = self.viewer_state.indices[0] or None
+        yi = self.viewer_state.indices[1] or None
+        zi = self.viewer_state.indices[2] or None
 
-            if self.viewer_state.function == 'slice':
+        if self.viewer_state.function == 'slice':
+            try:
                 if zi is None:
                     profile_values = data.compute_statistic('slice', self.attribute).squeeze()[xi, yi, :]
                 elif xi is None:
                     profile_values = data.compute_statistic('slice', self.attribute).squeeze()[:, yi, zi]
                 elif yi is None:
                     profile_values = data.compute_statistic('slice', self.attribute).squeeze()[xi, :, zi]
-
-            else:
-                profile_values = data.compute_statistic(self.viewer_state.function, self.attribute, axis=axes,
-                                                        subset_state=subset_state)
+            except Exception:
+                print('No pixel has been extracted with the image pixel extraction tool for the slicing.'
+                      'Please try again...')
         else:
             profile_values = data.compute_statistic(self.viewer_state.function, self.attribute, axis=axes,
                                                     subset_state=subset_state)
