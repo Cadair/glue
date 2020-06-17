@@ -66,7 +66,6 @@ class MatplotlibProfileMixin(object):
     def _set_wcs(self, event=None, relim=True):
         ref_coords = getattr(self.state.reference_data, 'coords', None)
 
-        # print(f"{self.state.wcsaxes_slice}, {ref_coords}")
 
         self.axes.frame_class = RectangularFrame1D
 

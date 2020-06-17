@@ -108,8 +108,8 @@ class ProfileViewerState(MatplotlibDataViewerState):
         data = self.reference_data
 
         with delay_callback(self, 'x_min', 'x_max'):
-            self.x_min = 0
-            self.x_max = data.shape[self.x_att_pixel.axis]
+            self.x_min = -0.5
+            self.x_max = data.shape[self.x_att_pixel.axis] - 0.5
 
     def _reset_y_limits(self, *event):
         if self.normalize:
