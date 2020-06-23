@@ -92,7 +92,8 @@ class MultiSliceWidgetHelper(object):
                     world = world_axis(self.data.coords, self.data,
                                        pixel_axis=self.data.ndim - 1 - i,
                                        world_axis=self.data.ndim - 1 - i)
-                    world_unit = self.data.coords.world_axis_units[i]
+                    world_unit = self.data.coords.world_axis_units[self.data.ndim - 1 - i]
+
                     world_warning = len(dependent_axes(self.data.coords, i)) > 1
                     world_label = self.data.world_component_ids[i].label
                 else:
