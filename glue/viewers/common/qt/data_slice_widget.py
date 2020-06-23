@@ -127,6 +127,8 @@ class SliceWidget(QtWidgets.QWidget):
         self.state.secondary_pixel = int(value)
         print('self.state.secondary_pixel', self.state.secondary_pixel)
 
+        print('self.state.slider_unit', self.state.slider_unit)
+
     def set_slider_from_label(self):
 
         # Ignore recursive calls - we do this rather than ignore_callback

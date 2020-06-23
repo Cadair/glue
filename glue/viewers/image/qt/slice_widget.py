@@ -91,9 +91,10 @@ class MultiSliceWidgetHelper(object):
                 if getattr(self.data, 'coords') is not None and type(self.data.coords) != LegacyCoordinates:
                     world_axis_index = self.data.ndim - 1 - i
                     world = world_axis(self.data.coords, self.data,
-                                       pixel_axis=world_axis_index,
-                                       world_axis=world_axis_index)
-                    world_unit = self.data.coords.world_axis_units[world_axis_index]
+                                       pixel_axis=self.data.ndim - 1 - i,
+                                       world_axis=self.data.ndim - 1 - i)
+                    world_unit = self.data.coords.world_axis_units[self.data.ndim - 1 - i]
+
                     world_warning = len(dependent_axes(self.data.coords, i)) > 1
                     world_label = self.data.world_component_ids[i].label
                 else:
