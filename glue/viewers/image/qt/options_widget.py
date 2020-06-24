@@ -34,6 +34,8 @@ class ImageOptionsWidget(QtWidgets.QWidget):
         self.session = session
         self.ui.axes_editor.button_apply_all.clicked.connect(self._apply_all_viewers)
 
+        print('test 0: self.viewer_state', self.viewer_state)
+
     def _apply_all_viewers(self):
         for tab in self.session.application.viewers:
             for viewer in tab:

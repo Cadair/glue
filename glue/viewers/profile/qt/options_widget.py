@@ -39,9 +39,9 @@ class ProfileOptionsWidget(QtWidgets.QWidget):
         for dataset in self.session.data_collection:
             if isinstance(dataset, IndexedData):
                 print('dataset.indices', dataset.indices)
-                # self.indices = dataset.indices
-
                 self.viewer_state.indices = dataset.indices
+
+                print('dataset.original_data', dataset.original_data)
 
         self.viewer_state.add_callback('x_att', self._on_attribute_change)
 

@@ -15,7 +15,7 @@ class PixelExtractionTool(ToolbarModeBase):
 
     icon = "glue_pixel_extraction"
     tool_id = 'image:pixel_extraction'
-    action_text = 'Pixel Extraction'
+    action_text = 'Pixel extraction'
     tool_tip = 'Extract data for a single pixel based on mouse location'
     status_tip = 'CLICK to select a point, then CLICK and DRAG to update the extracted dataset in real time'
 
