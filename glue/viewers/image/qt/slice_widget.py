@@ -56,6 +56,7 @@ class MultiSliceWidgetHelper(object):
             else:
                 slices.append(self.viewer_state.slices[i])
         self.viewer_state.slices = tuple(slices)
+        print('self.viewer_state.slices', self.viewer_state.slices)
 
     @avoid_circular
     def sync_sliders_from_state(self, *args):

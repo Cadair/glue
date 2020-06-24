@@ -27,7 +27,6 @@ from glue.app.qt.metadata import MetadataDialog
 from glue.core.data_derived import IndexedData
 
 
-
 @core.decorators.singleton
 class Clipboard(object):
 
