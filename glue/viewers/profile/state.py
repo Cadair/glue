@@ -299,14 +299,10 @@ class ProfileLayerState(MatplotlibLayerState):
             subset_state = None
 
         cube_slices = copy.copy(self.viewer_state.indices)
-        print('cube_slices 0', cube_slices)
 
         for idx, cube_slice in enumerate(self.viewer_state.slices):
             if cube_slice != 0:
-                print('idx, cube_slice', idx, cube_slice)
                 cube_slices[idx] = slice(None)
-
-        print('cube_slices 1', cube_slices)
 
         # xi = self.viewer_state.indices[0] or None
         # yi = self.viewer_state.indices[1] or None
