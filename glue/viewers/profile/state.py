@@ -42,6 +42,8 @@ class ProfileViewerState(MatplotlibDataViewerState):
                                             'which defines the coordinate frame in '
                                             'which the images are shown')
 
+    slices = DDCProperty(docstring='The current slice along all dimensions')
+
     function = DDSCProperty(docstring='The function to use for collapsing data')
 
     normalize = DDCProperty(False, docstring='Whether to normalize all profiles '
@@ -140,7 +142,9 @@ class ProfileViewerState(MatplotlibDataViewerState):
         if self.reference_data is not getattr(self, '_last_reference_data', None):
             self._last_reference_data = self.reference_data
 
+
             with delay_callback(self, 'x_att'):
+                self._set_default_slices()
 
                 if self.reference_data is None:
                     self.x_att_helper.set_multiple_data([])
@@ -182,6 +186,13 @@ class ProfileViewerState(MatplotlibDataViewerState):
             else:
                 slices.append(0)
         return slices[::-1]
+
+    def _set_default_slices(self):
+        # Need to make sure this gets called immediately when reference_data is changed
+        if self.reference_data is None:
+            self.slices = ()
+        else:
+            self.slices = (0,) * self.reference_data.ndim
 
 
 class ProfileLayerState(MatplotlibLayerState):
@@ -296,21 +307,11 @@ class ProfileLayerState(MatplotlibLayerState):
             data = self.layer
             subset_state = None
 
-        xi = self.viewer_state.indices[0] or None
-        yi = self.viewer_state.indices[1] or None
-        zi = self.viewer_state.indices[2] or None
-
         if self.viewer_state.function == 'slice':
-            try:
-                if zi is None:
-                    profile_values = data.compute_statistic('slice', self.attribute).squeeze()[xi, yi, :]
-                elif xi is None:
-                    profile_values = data.compute_statistic('slice', self.attribute).squeeze()[:, yi, zi]
-                elif yi is None:
-                    profile_values = data.compute_statistic('slice', self.attribute).squeeze()[xi, :, zi]
-            except Exception:
-                print('No pixel has been extracted with the image pixel extraction tool for the slicing.'
-                      'Please try again...')
+            print(f"{self.viewer_state.slices=}")
+            data_slice = list(self.viewer_state.slices)
+            data_slice[pix_cid.axis] = slice(None)
+            profile_values = data.compute_statistic('slice', self.attribute, view=tuple(data_slice))
         else:
             profile_values = data.compute_statistic(self.viewer_state.function, self.attribute, axis=axes,
                                                     subset_state=subset_state)

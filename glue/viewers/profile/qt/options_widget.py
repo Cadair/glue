@@ -7,6 +7,7 @@ from glue.core.coordinate_helpers import dependent_axes
 from echo.qt import autoconnect_callbacks_to_qt
 from glue.utils.qt import load_ui, fix_tab_widget_fontsize
 from glue.core.data_derived import IndexedData
+from glue.viewers.profile.qt.slice_widget import MultiSliceWidgetHelper
 
 
 __all__ = ['ProfileOptionsWidget']
@@ -42,6 +43,11 @@ class ProfileOptionsWidget(QtWidgets.QWidget):
                 self.viewer_state.indices = dataset.indices
 
         self.viewer_state.add_callback('x_att', self._on_attribute_change)
+
+
+        self.slice_helper = MultiSliceWidgetHelper(viewer_state=self.viewer_state,
+                                                   session=self.session,
+                                                   layout=self.ui.layout_slices)
 
         self.ui.text_warning.hide()
 

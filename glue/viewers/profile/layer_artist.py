@@ -36,7 +36,8 @@ class ProfileLayerArtist(MatplotlibLayerArtist):
         try:
             self.notify_start_computation()
             self._calculate_profile_thread(reset=reset)
-        except Exception:
+        except Exception as exc:
+            print(exc)
             self._calculate_profile_error(sys.exc_info())
         else:
             self._calculate_profile_postthread()
