@@ -28,13 +28,18 @@ class ImageOptionsWidget(QtWidgets.QWidget):
 
         self.viewer_state = viewer_state
 
+        self.session = session
+
         self.slice_helper = MultiSliceWidgetHelper(viewer_state=self.viewer_state,
+                                                   session=self.session,
                                                    layout=self.ui.layout_slices)
 
-        self.session = session
+        # self.session = session
+
         self.ui.axes_editor.button_apply_all.clicked.connect(self._apply_all_viewers)
 
-        print('test 0: self.viewer_state', self.viewer_state)
+        print('test 0: self.viewer_state.slices', self.viewer_state.slices)
+        print('test 1: self.slice_helper', self.slice_helper)
 
     def _apply_all_viewers(self):
         for tab in self.session.application.viewers:

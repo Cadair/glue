@@ -41,8 +41,6 @@ class ProfileOptionsWidget(QtWidgets.QWidget):
                 print('dataset.indices', dataset.indices)
                 self.viewer_state.indices = dataset.indices
 
-                print('dataset.original_data', dataset.original_data)
-
         self.viewer_state.add_callback('x_att', self._on_attribute_change)
 
         self.ui.text_warning.hide()

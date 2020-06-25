@@ -5,15 +5,18 @@ from glue.core.coordinate_helpers import dependent_axes, world_axis
 from glue.viewers.common.qt.data_slice_widget import SliceWidget
 from glue.viewers.image.state import AggregateSlice
 from glue.utils.decorators import avoid_circular
+from glue.core.data_derived import SlicedData
 
 __all__ = ['MultiSliceWidgetHelper']
 
 
 class MultiSliceWidgetHelper(object):
 
-    def __init__(self, viewer_state=None, layout=None):
+    def __init__(self, viewer_state=None, session=None, layout=None, *args, **kwargs):
 
         self.viewer_state = viewer_state
+
+        self.session = session
 
         self.layout = layout
         self.layout.setSpacing(4)
@@ -23,6 +26,8 @@ class MultiSliceWidgetHelper(object):
         self.viewer_state.add_callback('y_att', self.sync_sliders_from_state)
         self.viewer_state.add_callback('slices', self.sync_sliders_from_state)
         self.viewer_state.add_callback('reference_data', self.sync_sliders_from_state)
+
+        self._sliced = None
 
         self._sliders = []
 
@@ -57,6 +62,17 @@ class MultiSliceWidgetHelper(object):
                 slices.append(self.viewer_state.slices[i])
         self.viewer_state.slices = tuple(slices)
         print('self.viewer_state.slices', self.viewer_state.slices)
+
+        if self.viewer_state.reference_data is not self._reference_data:
+            self._reference_data = self.viewer_state.reference_data
+
+        if self._sliced is None:
+            self._sliced = SlicedData(self._reference_data, self.viewer_state.slices)
+            self.session.data_collection.append(self._sliced)
+        else:
+            self.session.data_collection.remove(self._sliced)
+            self._sliced = SlicedData(self._reference_data, self.viewer_state.slices)
+            self.session.data_collection.append(self._sliced)
 
     @avoid_circular
     def sync_sliders_from_state(self, *args):
@@ -108,6 +124,8 @@ class MultiSliceWidgetHelper(object):
                                      world_unit=world_unit, world_warning=world_warning)
 
                 self.slider_state = slider.state
+                print('self.slider_state', self.slider_state)
+
                 self.slider_state.add_callback('slice_center', self.sync_state_from_sliders)
                 self._sliders.append(slider)
                 self.layout.addWidget(slider)
@@ -118,6 +136,9 @@ class MultiSliceWidgetHelper(object):
                     self._sliders[i].state.slice_center = self.viewer_state.slices[i].center
                 else:
                     self._sliders[i].state.slice_center = self.viewer_state.slices[i]
+
+                print('self._sliders[i].state.slice_center', self._sliders[i].state.slice_center)
+
 
 if __name__ == "__main__":
 

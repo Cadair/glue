@@ -24,7 +24,7 @@ from glue.utils.qt import load_ui
 from glue.core.message import EditSubsetMessage
 from glue.core.hub import HubListener
 from glue.app.qt.metadata import MetadataDialog
-from glue.core.data_derived import IndexedData
+from glue.core.data_derived import IndexedData, SlicedData
 
 
 @core.decorators.singleton
@@ -198,14 +198,14 @@ class DeleteAction(LayerAction):
 
     def _can_trigger(self):
         selection = self.selected_layers()
-        return all(isinstance(s, (core.Data, core.SubsetGroup, IndexedData))
+        return all(isinstance(s, (core.Data, core.SubsetGroup, IndexedData, SlicedData))
                    for s in selection)
 
     def _do_action(self):
         assert self._can_trigger()
         selection = self.selected_layers()
         for s in selection:
-            if isinstance(s, (core.Data, IndexedData)):
+            if isinstance(s, (core.Data, IndexedData, SlicedData)):
                 self._layer_tree.data_collection.remove(s)
             else:
                 assert isinstance(s, core.SubsetGroup)
