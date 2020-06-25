@@ -1,5 +1,7 @@
 from collections import OrderedDict
 
+import copy
+
 import numpy as np
 
 from glue.core import Subset
@@ -296,19 +298,41 @@ class ProfileLayerState(MatplotlibLayerState):
             data = self.layer
             subset_state = None
 
-        xi = self.viewer_state.indices[0] or None
-        yi = self.viewer_state.indices[1] or None
-        zi = self.viewer_state.indices[2] or None
+        cube_slices = copy.copy(self.viewer_state.indices)
+        print('cube_slices 0', cube_slices)
 
+        for idx, cube_slice in enumerate(self.viewer_state.slices):
+            if cube_slice != 0:
+                print('idx, cube_slice', idx, cube_slice)
+                cube_slices[idx] = slice(None)
+
+        print('cube_slices 1', cube_slices)
+
+        # xi = self.viewer_state.indices[0] or None
+        # yi = self.viewer_state.indices[1] or None
+        # zi = self.viewer_state.indices[2] or None
+
+        cube_indices = copy.copy(cube_slices)
+
+        # The indices should be arranged in the ordinary (in contrast to reversed) order
         if self.viewer_state.function == 'slice':
             try:
-                if zi is None:
-                    profile_values = data.compute_statistic('slice', self.attribute).squeeze()[xi, yi, :]
-                elif xi is None:
-                    profile_values = data.compute_statistic('slice', self.attribute).squeeze()[:, yi, zi]
-                elif yi is None:
-                    profile_values = data.compute_statistic('slice', self.attribute).squeeze()[xi, :, zi]
-            except Exception:
+                slices = cube_indices
+                for idx, cube_index in enumerate(cube_indices):
+                    if cube_index is None:
+                        slices[idx] = 0
+                print(slices)
+                print(type(data.compute_statistic('slice', self.attribute).squeeze()))
+                profile_values = data.compute_statistic('slice', self.attribute).squeeze()[tuple(slices)]
+            # Previous code for the 3D case only
+            # try:
+            #     if zi is None:
+            #         profile_values = data.compute_statistic('slice', self.attribute).squeeze()[xi, yi, :]
+            #     elif xi is None:
+            #         profile_values = data.compute_statistic('slice', self.attribute).squeeze()[:, yi, zi]
+            #     elif yi is None:
+            #         profile_values = data.compute_statistic('slice', self.attribute).squeeze()[xi, :, zi]
+            except TypeError:
                 print('No pixel has been extracted with the image pixel extraction tool for the slicing.'
                       'Please try again...')
         else:
