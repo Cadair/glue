@@ -44,6 +44,8 @@ class ProfileViewerState(MatplotlibDataViewerState):
                                             'which defines the coordinate frame in '
                                             'which the images are shown')
 
+    slices = DDCProperty(docstring='The current slice along all dimensions')
+
     function = DDSCProperty(docstring='The function to use for collapsing data')
 
     normalize = DDCProperty(False, docstring='Whether to normalize all profiles '
@@ -185,6 +187,13 @@ class ProfileViewerState(MatplotlibDataViewerState):
                 slices.append(0)
         return slices[::-1]
 
+    def _set_default_slices(self):
+        # Need to make sure this gets called immediately when reference_data is changed
+        if self.reference_data is None:
+            self.slices = ()
+        else:
+            self.slices = (0,) * self.reference_data.ndim
+
 
 class ProfileLayerState(MatplotlibLayerState):
     """
@@ -317,7 +326,9 @@ class ProfileLayerState(MatplotlibLayerState):
                 for idx, cube_index in enumerate(cube_indices):
                     if cube_index is None:
                         slices[idx] = 0
-                print(slices)
+                        options_slider_idx = idx
+                print('slices', slices)
+                print('options_slider_idx', options_slider_idx)
                 print(type(data.compute_statistic('slice', self.attribute).squeeze()))
                 profile_values = data.compute_statistic('slice', self.attribute).squeeze()[tuple(slices)]
             # Previous code for the 3D case only
