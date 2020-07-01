@@ -326,10 +326,8 @@ class ProfileLayerState(MatplotlibLayerState):
                 for idx, cube_index in enumerate(cube_indices):
                     if cube_index is None:
                         slices[idx] = 0
-                        options_slider_idx = idx
-                print('slices', slices)
-                print('options_slider_idx', options_slider_idx)
-                print(type(data.compute_statistic('slice', self.attribute).squeeze()))
+                        # options_slider_idx = idx
+
                 profile_values = data.compute_statistic('slice', self.attribute).squeeze()[tuple(slices)]
             # Previous code for the 3D case only
             # try:
@@ -357,6 +355,8 @@ class ProfileLayerState(MatplotlibLayerState):
         if update_limits:
             self.update_limits(update_profile=False)
 
+        self.on_slider_change()
+
     def update_limits(self, update_profile=True):
 
         with delay_callback(self, 'v_min', 'v_max'):
@@ -365,3 +365,6 @@ class ProfileLayerState(MatplotlibLayerState):
             if self._profile_cache is not None and len(self._profile_cache[1]) > 0:
                 self.v_min = nanmin(self._profile_cache[1])
                 self.v_max = nanmax(self._profile_cache[1])
+
+    def on_slider_change(self, *arg):
+        print('State self.viewer_state.slices', self.viewer_state.slices)

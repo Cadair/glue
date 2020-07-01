@@ -251,7 +251,7 @@ class SlicedData(BaseCartesianData, HubListener):
             for idim in range(self._original_data.ndim):
                 before, after = self._slices[idim], value[idim]
                 if type(before) != type(after):
-                    raise TypeError("Can't change where the ``None`` values are in indices")
+                    raise TypeError("Can't change where the ``None`` values are in slices")
                 elif before != after:
                     has_changed = True
         else:
@@ -277,7 +277,7 @@ class SlicedData(BaseCartesianData, HubListener):
             for idim in range(self._original_data.ndim):
                 if self.slices[idim] is None:
                     self._cid_to_original_cid[self.world_component_ids[idim_new]] = \
-                    self._original_data.world_component_ids[idim]
+                        self._original_data.world_component_ids[idim]
                     idim_new += 1
 
         # Tell glue that the data has changed

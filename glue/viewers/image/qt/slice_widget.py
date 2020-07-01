@@ -61,7 +61,6 @@ class ImageMultiSliceWidgetHelper(object):
             else:
                 slices.append(self.viewer_state.slices[i])
         self.viewer_state.slices = tuple(slices)
-        print('self.viewer_state.slices', self.viewer_state.slices)
 
         if self.viewer_state.reference_data is not self._reference_data:
             self._reference_data = self.viewer_state.reference_data
@@ -76,7 +75,6 @@ class ImageMultiSliceWidgetHelper(object):
 
     @avoid_circular
     def sync_sliders_from_state(self, *args):
-
         if self.data is None or self.viewer_state.x_att is None or self.viewer_state.y_att is None:
             return
 
@@ -137,8 +135,6 @@ class ImageMultiSliceWidgetHelper(object):
                     self._sliders[i].state.slice_center = self.viewer_state.slices[i].center
                 else:
                     self._sliders[i].state.slice_center = self.viewer_state.slices[i]
-
-                print('self._sliders[i].state.slice_center', self._sliders[i].state.slice_center)
 
 
 if __name__ == "__main__":

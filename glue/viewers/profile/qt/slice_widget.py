@@ -5,7 +5,7 @@ from glue.core.coordinate_helpers import dependent_axes, world_axis
 from glue.viewers.common.qt.data_slice_widget import SliceWidget
 from glue.viewers.image.state import AggregateSlice
 from glue.utils.decorators import avoid_circular
-from glue.core.data_derived import SlicedData
+from glue.core.data_derived import IndexedData, SlicedData
 
 __all__ = ['ProfileMultiSliceWidgetHelper']
 
@@ -27,6 +27,7 @@ class ProfileMultiSliceWidgetHelper(object):
         self.viewer_state.add_callback('reference_data', self.sync_sliders_from_state)
 
         self._sliced = None
+        self._indexed = None
 
         self.slider_state = None
         self._sliders = []
@@ -42,8 +43,6 @@ class ProfileMultiSliceWidgetHelper(object):
 
     def _clear(self):
 
-        print('self.profile_layout.count()', self.profile_layout.count())
-
         for _ in range(self.profile_layout.count()):
             self.profile_layout.takeAt(0)
 
@@ -55,19 +54,28 @@ class ProfileMultiSliceWidgetHelper(object):
 
     @avoid_circular
     def sync_state_from_sliders(self, *args):
-        print("sync_state_from_sliders")
         slices = []
         for i, slider in enumerate(self._sliders):
             if slider is not None:
                 slices.append(slider.state.slice_center)
             else:
-                slices.append(slice(None))
-                # slices.append(self.viewer_state.slices[i])
+                slices.append(slice(None))  # revised
+                # slices.append(self.viewer_state.slices[i])  # original
         self.viewer_state.slices = tuple(slices)
-        print('self.viewer_state.slices', self.viewer_state.slices)
+        print('self.viewer_state.slices: {0}'.format(self.viewer_state.slices))
 
         if self.viewer_state.reference_data is not self._reference_data:
             self._reference_data = self.viewer_state.reference_data
+
+        for dataset in self.session.data_collection:
+            if isinstance(dataset, IndexedData):
+                self._indexed = dataset.indices
+
+        self.viewer_state.slices_list = list(self.viewer_state.slices)
+        for i, index in enumerate(self._indexed):
+            if index is not None:
+                self.viewer_state.slices_list[i] = index
+        self.viewer_state.slices = tuple(self.viewer_state.slices_list)
 
         if self._sliced is None:
             self._sliced = SlicedData(self._reference_data, self.viewer_state.slices)
@@ -79,9 +87,7 @@ class ProfileMultiSliceWidgetHelper(object):
 
     @avoid_circular
     def sync_sliders_from_state(self, *args):
-        print("sync_sliders_from_state")
-
-        if self.data is None or self.viewer_state.x_att is None:
+        if self.data is None or self.viewer_state.x_att_pixel is None:
             return
 
         # Update sliders if needed
@@ -123,7 +129,6 @@ class ProfileMultiSliceWidgetHelper(object):
                                      world_unit=world_unit, world_warning=world_warning)
 
                 self.slider_state = slider.state
-                print('self.slider_state', self.slider_state)
 
                 self.slider_state.add_callback('slice_center', self.sync_state_from_sliders)
                 self._sliders.append(slider)
@@ -134,7 +139,6 @@ class ProfileMultiSliceWidgetHelper(object):
                 if isinstance(self.viewer_state.slices[i], AggregateSlice):
                     self._sliders[i].state.slice_center = self.viewer_state.slices[i].center
                 else:
-                    print(f"{self._sliders=}, {self.viewer_state.slices=}")
                     if self.viewer_state.slices[i] == slice(None):
                         self._sliders[i].state.slice_center = 0
                     else:

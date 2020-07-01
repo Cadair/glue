@@ -10,7 +10,6 @@ from glue.core.data_derived import IndexedData, SlicedData
 from glue.viewers.profile.qt.slice_widget import ProfileMultiSliceWidgetHelper
 from glue.viewers.matplotlib.state import MatplotlibDataViewerState
 
-
 __all__ = ['ProfileOptionsWidget']
 
 
@@ -40,17 +39,15 @@ class ProfileOptionsWidget(QtWidgets.QWidget):
 
         for dataset in self.session.data_collection:
             if isinstance(dataset, IndexedData):
-                print('dataset.indices', dataset.indices)
+                print('dataset.indices: {0}'.format(dataset.indices))
                 self.viewer_state.indices = dataset.indices
 
         for dataset in self.session.data_collection:
             if isinstance(dataset, SlicedData):
-                print('dataset.slices', dataset.slices)
+                print('dataset.slices: {0}'.format(dataset.slices))
                 self.viewer_state.slices = dataset.slices
 
         self.viewer_state.add_callback('x_att', self._on_attribute_change)
-
-        # self.ui.layout_slices.setParent(None)
 
         self.profile_slice_helper = ProfileMultiSliceWidgetHelper(viewer_state=self.viewer_state,
                                                                   session=self.session,
@@ -59,10 +56,6 @@ class ProfileOptionsWidget(QtWidgets.QWidget):
         self.ui.text_warning.hide()
 
         self.ui.axes_editor.button_apply_all.clicked.connect(self._apply_all_viewers)
-
-        self.ui.layout_slices.takeAt(3)
-
-        print('self.ui.layout_slices.count()', self.ui.layout_slices.count())
 
     def _on_attribute_change(self, *args):
 
