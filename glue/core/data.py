@@ -1763,8 +1763,8 @@ class Data(BaseCartesianData):
             data = self.get_data(cid, view=view)
             mask = None
 
-        if statistic == 'slice':
-            data = self.get_data(cid, view=view)
+        # if statistic == 'slice':
+        #     data = self.get_data(cid, view=view)
 
         if isinstance(data, categorical_ndarray):
             data = data.codes

@@ -1,7 +1,5 @@
 from collections import OrderedDict
 
-import copy
-
 import numpy as np
 
 from glue.core import Subset
@@ -34,7 +32,7 @@ class ProfileViewerState(MatplotlibDataViewerState):
     """
 
     x_att_pixel = DDCProperty(docstring='The component ID giving the pixel component '
-                                  'shown on the x axis')
+                                        'shown on the x axis')
 
     x_att = DDSCProperty(docstring='The component ID giving the pixel or world component '
                                    'shown on the x axis')
@@ -87,6 +85,9 @@ class ProfileViewerState(MatplotlibDataViewerState):
 
     @defer_draw
     def _update_att(self, *args):
+        """
+        Define self.x_att_pixel in viewer state.
+        """
         if self.x_att is not None:
             if self._display_world:
                 if self.x_att in self.reference_data.pixel_component_ids:
@@ -211,9 +212,11 @@ class ProfileLayerState(MatplotlibLayerState):
     _viewer_callbacks_set = False
     _profile_cache = None
 
-    def __init__(self, layer=None, viewer_state=None, **kwargs):
+    def __init__(self, layer=None, viewer_state=None, session=None, **kwargs):
 
-        super(ProfileLayerState, self).__init__(layer=layer, viewer_state=viewer_state)
+        super(ProfileLayerState, self).__init__(layer=layer, viewer_state=viewer_state, session=session)
+
+        self.session = session
 
         self.attribute_lim_helper = StateAttributeLimitsHelper(self, attribute='attribute',
                                                                percentile='percentile',
@@ -285,7 +288,7 @@ class ProfileLayerState(MatplotlibLayerState):
             raise IncompatibleDataException()
 
         # Check what pixel axis in the current dataset x_att corresponds to
-        pix_cid = is_convertible_to_single_pixel_cid(self.layer, self.viewer_state.x_att_pixel)
+        pix_cid = is_convertible_to_single_pixel_cid(self.layer, self.viewer_state.x_att)
 
         if pix_cid is None:
             raise IncompatibleDataException()
@@ -307,39 +310,13 @@ class ProfileLayerState(MatplotlibLayerState):
             data = self.layer
             subset_state = None
 
-        cube_slices = copy.copy(self.viewer_state.indices)
-
-        for idx, cube_slice in enumerate(self.viewer_state.slices):
-            if cube_slice != 0:
-                cube_slices[idx] = slice(None)
-
-        # xi = self.viewer_state.indices[0] or None
-        # yi = self.viewer_state.indices[1] or None
-        # zi = self.viewer_state.indices[2] or None
-
-        cube_indices = copy.copy(cube_slices)
-
         # The indices should be arranged in the ordinary (in contrast to reversed) order
         if self.viewer_state.function == 'slice':
-            try:
-                slices = cube_indices
-                for idx, cube_index in enumerate(cube_indices):
-                    if cube_index is None:
-                        slices[idx] = 0
-                        # options_slider_idx = idx
+            # profile_values = data.compute_statistic('slice', self.attribute, view=self.viewer_state.slices)
 
-                profile_values = data.compute_statistic('slice', self.attribute).squeeze()[tuple(slices)]
-            # Previous code for the 3D case only
-            # try:
-            #     if zi is None:
-            #         profile_values = data.compute_statistic('slice', self.attribute).squeeze()[xi, yi, :]
-            #     elif xi is None:
-            #         profile_values = data.compute_statistic('slice', self.attribute).squeeze()[:, yi, zi]
-            #     elif yi is None:
-            #         profile_values = data.compute_statistic('slice', self.attribute).squeeze()[xi, :, zi]
-            except TypeError:
-                print('No pixel has been extracted with the image pixel extraction tool for the slicing.'
-                      'Please try again...')
+            data_slice = list(self.viewer_state.slices)
+            data_slice[pix_cid.axis] = slice(None)
+            profile_values = data.compute_statistic('slice', self.attribute, view=tuple(data_slice))
         else:
             profile_values = data.compute_statistic(self.viewer_state.function, self.attribute, axis=axes,
                                                     subset_state=subset_state)
@@ -355,8 +332,6 @@ class ProfileLayerState(MatplotlibLayerState):
         if update_limits:
             self.update_limits(update_profile=False)
 
-        self.on_slider_change()
-
     def update_limits(self, update_profile=True):
 
         with delay_callback(self, 'v_min', 'v_max'):
@@ -365,6 +340,3 @@ class ProfileLayerState(MatplotlibLayerState):
             if self._profile_cache is not None and len(self._profile_cache[1]) > 0:
                 self.v_min = nanmin(self._profile_cache[1])
                 self.v_max = nanmax(self._profile_cache[1])
-
-    def on_slider_change(self, *arg):
-        print('State self.viewer_state.slices', self.viewer_state.slices)

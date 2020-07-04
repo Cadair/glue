@@ -46,6 +46,7 @@ class ProfileLayerArtist(MatplotlibLayerArtist):
         # otherwise the thread tries to send these to the glue logger (which
         # uses Qt), which then results in this kind of error:
         # QObject::connect: Cannot queue arguments of type 'QTextCursor'
+
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             if reset:
@@ -147,16 +148,17 @@ class ProfileLayerArtist(MatplotlibLayerArtist):
 
         self.redraw()
 
-    def _update_profile(self, force=False, **kwargs):
+    def _update_profile(self, force=True, **kwargs):
 
-        if (self._viewer_state.x_att is None or
+        if (self._viewer_state.x_att_pixel is None or
                 self.state.attribute is None or
                 self.state.layer is None):
             return
 
         changed = set() if force else self.pop_changed_properties()
 
-        if force or any(prop in changed for prop in ('layer', 'x_att', 'attribute', 'function', 'normalize', 'v_min', 'v_max', 'visible')):
+        if force or any(prop in changed for prop in ('layer', 'slices', 'x_att', 'x_att_pixel', 'attribute',
+                                                     'function', 'normalize', 'v_min', 'v_max', 'visible')):
             self._calculate_profile(reset=force)
 
         if force or any(prop in changed for prop in ('alpha', 'color', 'zorder', 'linewidth')):

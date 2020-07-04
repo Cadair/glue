@@ -22,18 +22,22 @@ def get_identity_wcs(naxis):
 class MatplotlibProfileMixin(object):
 
     def setup_callbacks(self):
+        # self._wcs_set = False
+        self._changing_slice_requires_wcs_update = None
         self.state.add_callback('normalize', self._set_wcs)
-        self.state.add_callback('x_att', self._set_wcs)
+        self.state.add_callback('x_att_pixel', self._set_wcs)
         self.state.add_callback('reference_data', self._set_wcs)
+        self.state.add_callback('slices', self._set_wcs)
 
     def update_x_ticklabel(self, *event):
         # We need to overload this here for WCSAxes
         # if hasattr(self, '_wcs_set') and self._wcs_set and self.state.x_att is not None:
         #     axis = self.state.reference_data.ndim - self.state.x_att.axis - 1
         # else:
-        axis = 0
-        self.axes.coords[axis].set_ticklabel(size=self.state.x_ticklabel_size)
 
+        axis = 0
+
+        self.axes.coords[axis].set_ticklabel(size=self.state.x_ticklabel_size)
         self.redraw()
 
     def _update_axes(self, *args):
@@ -60,7 +64,7 @@ class MatplotlibProfileMixin(object):
         if len(self.layers) == 0:
             return
 
-        subset_state = roi_to_subset_state(roi, x_att=self.state.x_att)
+        subset_state = roi_to_subset_state(roi, x_att=self.state.x_att_pixel)
         self.apply_subset_state(subset_state, override_mode=override_mode)
 
     def _set_wcs(self, event=None, relim=True):
@@ -80,11 +84,12 @@ class MatplotlibProfileMixin(object):
         self.state.x_axislabel = ''
         self.state.y_axislabel = 'Data values'
 
-        # self._update_appearance_from_settings()
+        self._update_appearance_from_settings()
         self._update_axes()
 
         self.update_x_ticklabel()
-        # self.update_y_ticklabel()
 
         if relim:
             self.state.reset_limits()
+
+        # self._wcs_set = True

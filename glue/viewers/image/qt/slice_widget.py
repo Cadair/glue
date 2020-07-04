@@ -123,7 +123,6 @@ class ImageMultiSliceWidgetHelper(object):
                                      world_unit=world_unit, world_warning=world_warning)
 
                 self.slider_state = slider.state
-                print('self.slider_state', self.slider_state)
 
                 self.slider_state.add_callback('slice_center', self.sync_state_from_sliders)
                 self._sliders.append(slider)

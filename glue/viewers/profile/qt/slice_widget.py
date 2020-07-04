@@ -59,10 +59,9 @@ class ProfileMultiSliceWidgetHelper(object):
             if slider is not None:
                 slices.append(slider.state.slice_center)
             else:
-                slices.append(slice(None))  # revised
-                # slices.append(self.viewer_state.slices[i])  # original
+                slices.append(slice(None))
+
         self.viewer_state.slices = tuple(slices)
-        print('self.viewer_state.slices: {0}'.format(self.viewer_state.slices))
 
         if self.viewer_state.reference_data is not self._reference_data:
             self._reference_data = self.viewer_state.reference_data
@@ -70,12 +69,6 @@ class ProfileMultiSliceWidgetHelper(object):
         for dataset in self.session.data_collection:
             if isinstance(dataset, IndexedData):
                 self._indexed = dataset.indices
-
-        self.viewer_state.slices_list = list(self.viewer_state.slices)
-        for i, index in enumerate(self._indexed):
-            if index is not None:
-                self.viewer_state.slices_list[i] = index
-        self.viewer_state.slices = tuple(self.viewer_state.slices_list)
 
         if self._sliced is None:
             self._sliced = SlicedData(self._reference_data, self.viewer_state.slices)
