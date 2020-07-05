@@ -21,7 +21,7 @@ def get_identity_wcs(naxis):
 class MatplotlibProfileMixin(object):
 
     def setup_callbacks(self):
-        
+
         self._changing_slice_requires_wcs_update = None
         self.state.add_callback('normalize', self._set_wcs)
         self.state.add_callback('x_att_pixel', self._set_wcs)
