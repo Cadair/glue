@@ -7,8 +7,6 @@ import numpy as np
 
 from qtpy.QtCore import Qt
 from qtpy import QtWidgets, QtGui
-from qtpy.QtWidgets import (QSlider, QLineEdit, QComboBox, QWidget,
-                            QLabel, QHBoxLayout, QCheckBox)
 
 from glue.utils import color2hex, nanmean, nanmedian, nanmin, nanmax, nansum
 from glue.config import fit_plugin, viewer_tool

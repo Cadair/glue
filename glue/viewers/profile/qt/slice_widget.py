@@ -1,5 +1,3 @@
-import numpy as np
-
 from glue.core.coordinates import LegacyCoordinates
 from glue.core.coordinate_helpers import dependent_axes, world_axis
 from glue.viewers.common.qt.data_slice_widget import SliceWidget

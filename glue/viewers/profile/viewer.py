@@ -1,6 +1,5 @@
 from glue.core.subset import roi_to_subset_state
-from glue.core.coordinates import Coordinates, LegacyCoordinates
-from glue.core.coordinate_helpers import dependent_axes
+from glue.core.coordinates import LegacyCoordinates
 
 from astropy.wcs import WCS
 from astropy.visualization.wcsaxes.frame import RectangularFrame1D
@@ -22,7 +21,7 @@ def get_identity_wcs(naxis):
 class MatplotlibProfileMixin(object):
 
     def setup_callbacks(self):
-        # self._wcs_set = False
+        
         self._changing_slice_requires_wcs_update = None
         self.state.add_callback('normalize', self._set_wcs)
         self.state.add_callback('x_att_pixel', self._set_wcs)
@@ -30,20 +29,14 @@ class MatplotlibProfileMixin(object):
         self.state.add_callback('slices', self._set_wcs)
 
     def update_x_ticklabel(self, *event):
-        # We need to overload this here for WCSAxes
-        # if hasattr(self, '_wcs_set') and self._wcs_set and self.state.x_att is not None:
-        #     axis = self.state.reference_data.ndim - self.state.x_att.axis - 1
-        # else:
 
+        # We need to overload this here for WCSAxes
         axis = 0
 
         self.axes.coords[axis].set_ticklabel(size=self.state.x_ticklabel_size)
         self.redraw()
 
     def _update_axes(self, *args):
-
-        # if self.state.x_att is not None:
-        #     self.state.x_axislabel = self.state.x_att.label
 
         if self.state.normalize:
             self.state.y_axislabel = 'Normalized data values'
@@ -91,5 +84,3 @@ class MatplotlibProfileMixin(object):
 
         if relim:
             self.state.reset_limits()
-
-        # self._wcs_set = True
