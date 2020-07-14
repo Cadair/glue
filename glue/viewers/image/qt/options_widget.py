@@ -4,7 +4,7 @@ from qtpy import QtWidgets
 
 from echo.qt import autoconnect_callbacks_to_qt
 from glue.utils.qt import load_ui, fix_tab_widget_fontsize
-from glue.viewers.image.qt.slice_widget import ImageMultiSliceWidgetHelper
+from glue.viewers.image.qt.slice_widget import MultiSliceWidgetHelper
 from glue.viewers.matplotlib.state import MatplotlibDataViewerState
 
 __all__ = ['ImageOptionsWidget']
@@ -30,7 +30,7 @@ class ImageOptionsWidget(QtWidgets.QWidget):
 
         self.session = session
 
-        self.slice_helper = ImageMultiSliceWidgetHelper(viewer_state=self.viewer_state,
+        self.slice_helper = MultiSliceWidgetHelper(viewer_state=self.viewer_state,
                                                         session=self.session,
                                                         layout=self.ui.layout_slices)
 
