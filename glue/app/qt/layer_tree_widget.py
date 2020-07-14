@@ -24,7 +24,6 @@ from glue.utils.qt import load_ui
 from glue.core.message import EditSubsetMessage
 from glue.core.hub import HubListener
 from glue.app.qt.metadata import MetadataDialog
-from glue.core.data_derived import IndexedData, SlicedData
 
 
 @core.decorators.singleton
