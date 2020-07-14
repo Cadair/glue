@@ -7,10 +7,10 @@ from glue.viewers.image.state import AggregateSlice
 from glue.utils.decorators import avoid_circular
 from glue.core.data_derived import SlicedData
 
-__all__ = ['ImageMultiSliceWidgetHelper']
+__all__ = ['MultiSliceWidgetHelper']
 
 
-class ImageMultiSliceWidgetHelper(object):
+class MultiSliceWidgetHelper(object):
 
     def __init__(self, viewer_state=None, session=None, layout=None, *args, **kwargs):
 
@@ -159,7 +159,7 @@ if __name__ == "__main__":
     viewer_state.y_att = data.pixel_component_ids[3]
     viewer_state.slices = [0] * 5
 
-    widget = ImageMultiSliceWidgetHelper(viewer_state)
+    widget = MultiSliceWidgetHelper(viewer_state)
     widget.show()
 
     app.exec_()

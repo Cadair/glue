@@ -1763,9 +1763,6 @@ class Data(BaseCartesianData):
             data = self.get_data(cid, view=view)
             mask = None
 
-        # if statistic == 'slice':
-        #     data = self.get_data(cid, view=view)
-
         if isinstance(data, categorical_ndarray):
             data = data.codes
 
@@ -1793,7 +1790,6 @@ class Data(BaseCartesianData):
                                    positive=positive, percentile=percentile)
 
         if subarray_slices is None or axis is None:
-
             return result
         else:
             # Since subarray_slices was set above, we need to determine the
@@ -1807,7 +1803,6 @@ class Data(BaseCartesianData):
             full_result = np.zeros(full_shape) * np.nan
             result_slices = [subarray_slices[idim] for idim in range(self.ndim) if idim not in axis]
             full_result[result_slices] = result
-
             return full_result
 
     def compute_histogram(self, cids, weights=None, range=None, bins=None, log=None, subset_state=None):
