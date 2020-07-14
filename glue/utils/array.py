@@ -10,9 +10,8 @@ __all__ = ['unique', 'shape_to_string', 'view_shape', 'stack_view',
            'coerce_numeric', 'check_sorted', 'broadcast_to', 'unbroadcast',
            'iterate_chunks', 'combine_slices', 'nanmean', 'nanmedian', 'nansum',
            'nanmin', 'nanmax', 'format_minimal', 'compute_statistic',
-           'categorical_ndarray', 'index_lookup',
-           'ensure_numerical', 'broadcast_arrays_minimal',
-           'random_views_for_dask_array']
+           'categorical_ndarray', 'index_lookup', 'ensure_numerical',
+           'broadcast_arrays_minimal', 'random_views_for_dask_array']
 
 
 def unbroadcast(array):
@@ -478,11 +477,11 @@ def compute_statistic(statistic, data, mask=None, axis=None, finite=True,
             data = np.array(data, dtype=float)
             data[~keep] = np.nan
 
-        function = NAN_FUNCTIONS[statistic] or None
+        function = NAN_FUNCTIONS[statistic]
 
     else:
 
-        function = PLAIN_FUNCTIONS[statistic] or None
+        function = PLAIN_FUNCTIONS[statistic]
 
     if data.size == 0:
         return np.nan
